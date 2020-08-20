@@ -1,37 +1,65 @@
-// Sort the data array using the greekSearchResults value
-data.sort(function(a, b) {
-  return parseFloat(b.greekSearchResults) - parseFloat(a.greekSearchResults);
-});
 
-// Slice the first 10 objects for plotting
-data = data.slice(0, 10);
+function init() {
+    var selector = d3.select("#selDataset");
+  
+    d3.json("samples.json").then((data) => {
+      console.log(data);
+      var sampleNames = data.names;
+      sampleNames.forEach((sample) => {
+        selector
+          .append("option")
+          .text(sample)
+          .property("value", sample);
+      });
+  })}
+  
+  init();
 
-// Reverse the array due to Plotly's defaults
-data = data.reverse();
+function optionChanged(newSample) {
+  buildMetadata(newSample);
+  buildCharts(newSample);
+}
 
-// Trace1 for the Greek Data
-var trace1 = {
-  x: data.map(row => row.greekSearchResults),
-  y: data.map(row => row.greekName),
-  text: data.map(row => row.greekName),
-  name: "Greek",
-  type: "bar",
-  orientation: "h"
-};
+function buildMetadata(sample) {
+  d3.json("samples.json").then((data) => {
+    var metadata = data.metadata;
+    var resultArray = metadata.filter(sampleObj => sampleObj.id == sample);
+    var result = resultArray[0];
+    var PANEL = d3.select("#sample-metadata");
 
-// data
-var data = [trace1];
+      PANEL.html("");
+      Object.entries(result).forEach(([key,value]) => {
+        item = (key+": "+value)
+        PANEL.append("h6").text(item);
+      })
+  });
+}
 
-// Apply the group bar mode to the layout
-var layout = {
-  title: "Greek gods search results",
-  margin: {
-    l: 100,
-    r: 100,
-    t: 100,
-    b: 100
-  }
-};
 
-// Render the plot to the div tag with id "plot"
-Plotly.newPlot("plot", data, layout);
+// TO DO:  BUILD CHARTS WITH THIS FUNCTION
+function buildCharts(sample) {
+  d3.json("samples.json").then((data) => {
+    var samplesArray = data.samples;
+    var filteredSamplesArray = samplesArray.filter(sampleObj => sampleObj.id == sample);
+    console.log(filteredSamplesArray)
+    var sampleValues = filteredSamplesArray[0].sample_values.slice(0,10).reverse();
+    var otuIds = filteredSamplesArray[0].otu_ids.slice(0,10).reverse();
+    var otuLabels = filteredSamplesArray[0].otu_labels.slice(0,10).reverse();
+    // var BAR = d3.select("#bar");
+
+    var barData = {
+      type: 'bar',
+      x: sampleValues,
+      y: otuIds.map((item) => "OTU" + item),
+      text: otuLabels,
+      orientation: 'h'
+    };
+
+    var layout = {
+      title: 'Top 10 Bacterial Species'
+    };
+
+    Plotly.newPlot('bar', [barData], layout);
+    
+  });
+}
