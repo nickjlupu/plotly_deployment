@@ -1,0 +1,14 @@
+
+body {
+  
+  background-color: #008b8b
+}
+
+.col-md-5 {
+  border-style: dotted;
+  border-color: red;
+}
+
+#jumbotron {
+  background-color: #00ffff;
+}
