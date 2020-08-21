@@ -11,9 +11,19 @@ function init() {
           .text(sample)
           .property("value", sample);
       });
+
+      buildMetadata(940);
+      buildCharts(940);
+
+    
+
+      
   })}
   
-  init();
+init();
+
+
+
 
 function optionChanged(newSample) {
   buildMetadata(newSample);
@@ -25,6 +35,8 @@ function buildMetadata(sample) {
     var metadata = data.metadata;
     var resultArray = metadata.filter(sampleObj => sampleObj.id == sample);
     var result = resultArray[0];
+    var washings = parseInt(result.wfreq);
+    console.log(washings);
     var PANEL = d3.select("#sample-metadata");
 
       PANEL.html("");
@@ -32,6 +44,25 @@ function buildMetadata(sample) {
         item = (key+": "+value)
         PANEL.append("h6").text(item);
       })
+
+    var gaugeData = {
+      domain: { x: [0, 10], y: [0, 10] },
+      value: washings,
+      type: 'indicator',
+      mode: 'gauge+number'      
+      };
+    
+    var layoutGauge = {
+      title: 'Belly Button Washing Frequency',
+      annotations: [{
+        text: 'Scrubs per Week', 
+        showarrow: false, 
+        align: 'center',
+        x: 0.5,
+        y: 1.15}]
+    };
+
+    Plotly.newPlot('gauge', [gaugeData], layoutGauge);
   });
 }
 
@@ -45,7 +76,6 @@ function buildCharts(sample) {
     var sampleValues = filteredSamplesArray[0].sample_values.slice(0,10).reverse();
     var otuIds = filteredSamplesArray[0].otu_ids.slice(0,10).reverse();
     var otuLabels = filteredSamplesArray[0].otu_labels.slice(0,10).reverse();
-    // var BAR = d3.select("#bar");
 
     var barData = {
       type: 'bar',
@@ -55,11 +85,32 @@ function buildCharts(sample) {
       orientation: 'h'
     };
 
-    var layout = {
+    var layoutBar = {
       title: 'Top 10 Bacterial Species'
     };
 
-    Plotly.newPlot('bar', [barData], layout);
+    Plotly.newPlot('bar', [barData], layoutBar);
     
+    var bubbleData = {
+      x: otuIds,
+      y: sampleValues,
+      text: otuLabels,
+      mode: 'markers',
+      marker: {
+        color: otuIds,
+        size: sampleValues
+      } 
+    };
+    
+    var layoutBubble = {
+      title: 'Sample Size by OTU ID',
+      xaxis: {title: 'OTU ID'},
+      yaxis: {title: 'no. of samples'}
+    };
+
+    Plotly.newPlot('bubble', [bubbleData], layoutBubble);
+
+
   });
 }
+
