@@ -70,7 +70,8 @@ function buildCharts(sample) {
     };
 
     var layoutBar = {
-      title: 'Top 10 Bacterial Species'
+      title: 'Top 10 Bacterial Species',
+      paper_bgcolor: '#00ffff'
     };
 
     Plotly.newPlot('bar', [barData], layoutBar);
@@ -89,7 +90,8 @@ function buildCharts(sample) {
     var layoutBubble = {
       title: 'Sample Size by OTU ID',
       xaxis: {title: 'OTU ID'},
-      yaxis: {title: 'no. of samples'}
+      yaxis: {title: 'no. of samples'},
+      paper_bgcolor: '#00ffff'
     };
 
     Plotly.newPlot('bubble', [bubbleData], layoutBubble);
@@ -116,7 +118,8 @@ function buildGaugeChart(washings) {
       showarrow: false, 
       align: 'center',
       x: 0.5,
-      y: 1.15}]
+      y: 1.15}],
+      paper_bgcolor: '#00ffff'
   };
 
   Plotly.newPlot('gauge', [gaugeData], layoutGauge);

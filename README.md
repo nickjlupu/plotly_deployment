@@ -19,3 +19,5 @@ The goals of this challenge are to:
 
 ## Link to Deployed Page
 [https://nickjlupu.github.io/plotly_deployment/](https://nickjlupu.github.io/plotly_deployment/)
+
+Note:  I wanted to demonstrate that I am able to use some of the elements of css as well as connecting the css sheet to my html file, but the appearance of this site could be improved upon. 
